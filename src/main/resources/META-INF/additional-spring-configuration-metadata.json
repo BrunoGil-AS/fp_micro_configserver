@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "app.allowed.origins",
+      "type": "java.lang.String",
+      "description": "A comma-separated list of allowed origins for CORS requests."
+    }
+  ]
+}
