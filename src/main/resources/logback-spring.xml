@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Propiedades globales -->
+    <property name="LOG_PATH" value="./logs"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+    <!-- Patrón simplificado para consola (sin %clr que requiere Spring Boot completo) -->
+    <property name="LOG_PATTERN_CONSOLE" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [CONFIG-SERVER] [%logger{36}] - %msg%n"/>
+    
+    <!-- Configuración para diferentes profiles -->
+    <springProfile name="!prod">
+        <!-- Console Appender para desarrollo -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_CONSOLE}</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <!-- File Appender para logs generales -->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/config-server.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/config-server.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- File Appender para logs de aplicación (solo nuestros packages) -->
+    <appender name="FILE_APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/config-server-app.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/config-server-app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <!-- File Appender para logs de errores -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/config-server-error.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/config-server-error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <!-- Appender para logs de Spring Framework -->
+    <appender name="FILE_SPRING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/spring-framework.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/spring-framework.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>30MB</maxFileSize>
+            <maxHistory>15</maxHistory>
+            <totalSizeCap>300MB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!-- Configuración de loggers por package -->
+    
+    <!-- Logger para nuestros packages de aplicación -->
+    <logger name="com.aspiresys" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_APP"/>
+        <appender-ref ref="FILE_ERROR"/>
+        <springProfile name="!prod">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+    </logger>
+
+    <!-- Loggers para Spring Framework -->
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="FILE_SPRING"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </logger>
+    
+    <logger name="org.springframework.cloud.config" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_APP"/>
+        <appender-ref ref="FILE_ERROR"/>
+        <springProfile name="!prod">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+    </logger>
+
+    <!-- Loggers para Spring Framework -->
+    <logger name="org.springframework.security" level="INFO" additivity="false">
+        <appender-ref ref="FILE_SPRING"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </logger>
+    
+    <logger name="org.springframework.cloud" level="INFO" additivity="false">
+        <appender-ref ref="FILE_SPRING"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </logger>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="FILE_ALL"/>
+        <appender-ref ref="FILE_ERROR"/>
+        <springProfile name="!prod">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+    </root>
+</configuration>
