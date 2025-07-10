@@ -4,6 +4,21 @@
       "name": "app.allowed.origins",
       "type": "java.lang.String",
       "description": "A comma-separated list of allowed origins for CORS requests."
+    },
+    {
+      "name": "app.security.localhost.ipv4",
+      "type": "java.lang.String",
+      "description": "The IPv4 address of the localhost allowed for security purposes."
+    },
+    {
+      "name": "app.security.localhost.ipv6",
+      "type": "java.lang.String",
+      "description": "The IPv6 address of the localhost allowed for security purposes."
+    },
+    {
+      "name": "app.security.error.message",
+      "type": "java.lang.String",
+      "description": "The error message returned when a request is not from an allowed localhost address."
     }
   ]
 }
