@@ -236,27 +236,6 @@ cd fp_micro_configserver
 java -jar target/fp_micro_configserver-0.0.1-SNAPSHOT.war
 ```
 
-### Production Deployment
-
-```bash
-# Build WAR file
-./mvnw clean package
-
-# Deploy to Tomcat or other servlet container
-cp target/fp_micro_configserver-0.0.1-SNAPSHOT.war /path/to/tomcat/webapps/
-```
-
-### Docker Deployment (Optional)
-
-Create a `Dockerfile`:
-
-```dockerfile
-FROM openjdk:17-jre-slim
-COPY target/fp_micro_configserver-0.0.1-SNAPSHOT.war app.war
-EXPOSE 8888
-ENTRYPOINT ["java", "-jar", "/app.war"]
-```
-
 ## Configuration Management
 
 ### Adding New Service Configuration
