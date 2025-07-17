@@ -416,9 +416,3 @@ spring.cloud.config.discovery.service-id=fp_micro_configserver
 2. Add tests for new functionality
 3. Update documentation for configuration changes
 4. Ensure security best practices are maintained
-
-## References
-
-- [Spring Cloud Config Documentation](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/)
-- [Spring Boot Actuator Guide](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
-- [Spring Security Reference](https://docs.spring.io/spring-security/reference/)
