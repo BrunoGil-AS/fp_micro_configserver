@@ -59,6 +59,22 @@ public class SecurityConfig {
     
     @Value("${app.security.error.message}")
     private String errorMessage;
+    
+    /**
+     * Configures the main security filter chain for the application.
+     * <p>
+     * This bean sets up the following security rules:
+     * <ul>
+     *   <li>Disables Cross-Site Request Forgery (CSRF) protection, as this service is not directly accessed by browsers in a stateful way.</li>
+     *   <li>Permits all incoming HTTP requests at the Spring Security level. The actual access control is delegated to the {@link #corsAndLocalhostFilter()}, which restricts requests to localhost.</li>
+     * </ul>
+     * This broad permission is necessary to allow the custom filter to handle all incoming traffic for fine-grained control.
+     * </p>
+     *
+     * @param http The {@link HttpSecurity} to configure.
+     * @return The configured {@link SecurityFilterChain}.
+     * @throws Exception if an error occurs during configuration.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -70,6 +86,19 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates a filter to handle CORS and restrict access to localhost.
+     * <p>
+     * This filter is executed with the highest precedence to ensure it runs before any other security or application filters. It performs two primary functions:
+     * <ol>
+     *   <li><b>CORS Handling</b>: It inspects the {@code Origin} header of the incoming request. If the origin is in the list of allowed origins (configured via {@code app.allowed.origins}), it adds the necessary CORS headers to the response, allowing cross-origin requests from trusted sources.</li>
+     *   <li><b>Localhost Restriction</b>: It checks the remote IP address of the request. Access is only granted if the request originates from the configured localhost IPv4 or IPv6 addresses. For any other address, it rejects the request with an HTTP 403 Forbidden status and a configured error message.</li>
+     * </ol>
+     * This ensures that the configuration server can only be accessed by services running on the same machine, enhancing security.
+     * </p>
+     *
+     * @return A {@link Filter} instance that enforces CORS and localhost-only access.
+     */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public Filter corsAndLocalhostFilter() {
@@ -84,7 +113,7 @@ public class SecurityConfig {
                     response.setHeader(CORS_ALLOW_HEADERS, CORS_HEADERS_VALUE);
                     response.setHeader(CORS_ALLOW_CREDENTIALS, CORS_CREDENTIALS_VALUE);
                 }
-                // Permitir solo peticiones locales
+
                 String remoteAddr = request.getRemoteAddr();
                 if (remoteAddr.equals(localhostIpv4) || remoteAddr.equals(localhostIpv6)) {
                     filterChain.doFilter(request, response);
