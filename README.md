@@ -51,13 +51,19 @@ This service allows multiple microservices to retrieve their configuration prope
 
 ### Core Application Properties
 
-The main configuration is located in `src/main/resources/application.properties`:
+The main configuration is located in [`application.properties`](src/main/resources/application.properties):
 
 ```properties
 # Server Configuration
 spring.application.name=fp_micro_configserver
 server.port=8888
+```
 
+The application properties also have a profile segmentation to run depending on the environment:
+
+The [`application-dev.properties`](src/main/resources/application-dev.properties) which includes:
+
+```properties
 # Git Repository Configuration (Local)
 spring.cloud.config.server.git.uri=file:///C:/path/to/fp_files_configproperties
 spring.cloud.config.server.git.search-paths=**
