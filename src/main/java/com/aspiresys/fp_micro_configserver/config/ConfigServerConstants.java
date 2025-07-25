@@ -1,7 +1,20 @@
 package com.aspiresys.fp_micro_configserver.config;
 
 /**
- * Constantes para la configuración del config server.
+ * Constant values used in the configuration server.
+ * <p>
+ * This class defines constants for CORS headers, HTTP headers, request matcher patterns,
+ * and other configuration-related values.
+ * </p>
+ * <h2>Usage</h2>
+ * <ul>
+ *  <li>Use CORS constants to configure cross-origin resource sharing in the application.</li>
+ * <li>HTTP header constants can be used to set or retrieve specific headers in HTTP requests.</li>
+ * <li>Request matcher patterns can be used to define security rules or routing configurations.</li>
+ * <li>Origin delimiter is used to split multiple origins in CORS configurations.</li>
+ * </ul>
+ * <p> * This class is not intended to be instantiated.
+ * </p> 
  */
 public final class ConfigServerConstants {
     private ConfigServerConstants() {}
